@@ -33,17 +33,20 @@ useEffect(()=>{
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-200">
-              <th className="p-3 text-center">ID</th>
+              <th className="p-3 text-center">Image</th>
               <th className="p-3 text-center">Name</th>
               <th className="p-3 text-center">Email</th>
             </tr>
           </thead>
           <tbody>
             {users.map((u,i) => (
-              <tr key={u.id} className="border-t">
-                <td className="p-3">{i+1}</td>
-                <td className="p-3">{u.name}</td>
-                <td className="p-3">{u.email}</td>
+              <tr key={i} className="border-t">
+                <td className="p-3 text-center flex justify-center">
+  <img src={u.image} alt="user" width={100} />
+</td>
+
+                <td className="p-3 text-center">{u.name}</td>
+                <td className="p-3 text-center">{u.email}</td>
                  
               </tr>
             ))}

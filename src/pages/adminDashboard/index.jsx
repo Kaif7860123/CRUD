@@ -8,14 +8,19 @@ function CrudApp() {
 
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
+  const [image, setimage] = useState("");
   const [id, setid] = useState();
   const token = localStorage.getItem("token");
   const navigate=useNavigate()
   const handleAdd = async () => {
+    const formData=new FormData()
+    formData.append("name",name)
+    formData.append("email",email)
+    formData.append("image",image)
     const user = await fetch("http://localhost:3000/api/v1/user", {
       method: "post",
-      headers: { "content-type": "application/json", "Authorization": `Bearer ${token}` },
-      body: JSON.stringify({ name, email }),
+      // headers: { "content-type": "multipart/form-data; boundary=<calculated when request is sent>", "Authorization": `Bearer ${token}` },
+      body:formData
     });
     const data = await user.json();
     console.log(data);
@@ -23,6 +28,7 @@ function CrudApp() {
     if (data.msg == "record saved") {
       setname("");
       setemail("");
+      setimage("")
       getUserData();
     }
     if(data.msg=="Invalid or expired token"){
@@ -68,6 +74,7 @@ navigate("/admin_login")
     setIsEditing(true);
     setname(m.name);
     setemail(m.email);
+    setimage(m.image)
     setid(m._id);
      if(data.msg=="Invalid or expired token"){
 navigate("/admin_login")
@@ -98,7 +105,7 @@ navigate("/admin_login")
   }, []);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
-      <div className="w-full max-w-3xl bg-white p-6 rounded-2xl shadow-lg">
+      <div className="w-full max-w-4xl bg-white p-6 rounded-2xl shadow-lg">
         <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-3">
           Admin Dashboard
         </h2>
@@ -122,6 +129,15 @@ navigate("/admin_login")
             placeholder="Enter Email"
             value={email}
             onChange={(e) => setemail(e.target.value)}
+            className="flex-1 border p-2 rounded-lg"
+            required
+          />
+           <input
+            type="file"
+            name="image"
+            // placeholder="Enter Email"
+            
+            onChange={(e) => setimage(e.target.files[0])}
             className="flex-1 border p-2 rounded-lg"
             required
           />
@@ -153,6 +169,7 @@ navigate("/admin_login")
           <table className="w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-200 text-left">
+                <th className="border p-2 text-center">image</th>
                 <th className="border p-2 text-center">Name</th>
                 <th className="border p-2 text-center">Email</th>
                 <th className="border p-2 text-center">Actions</th>
@@ -161,9 +178,15 @@ navigate("/admin_login")
             <tbody>
               {users.map((u) => (
                 <tr key={u.id} className="hover:bg-gray-50">
-                  <td className="border p-2">{u.name}</td>
-                  <td className="border p-2">{u.email}</td>
-                  <td className="border p-2 text-center">
+                  <td className="border p-2 text-center" >
+
+                  <img src={u.image} alt="user" width={100} />
+
+                  </td>
+
+                  <td className="border p-2 text-center">{u.name}</td>
+                  <td className="border p-2 text-center">{u.email}</td>
+                  <td className="border p-2  text-center">
                     <button
                       onClick={() => handleEdit(u)}
                       className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"

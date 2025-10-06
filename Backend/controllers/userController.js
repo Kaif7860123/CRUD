@@ -1,13 +1,21 @@
 const userModel = require("../models/userModel");
+const { uploadOnCloudinary } = require("../utills/cloudinary");
 exports.user=async(req,res)=>{
 const {name,email}=req.body;
+const image1=req.files.image[0]?.path;
+const image2=req.files.image[1]?.path;
+console.log(image1)
+const response=await uploadOnCloudinary(image1)
+console.log(response)
+// console.log(req.files)
 if(!email.includes("@gmail.com")){
 res.json({msg:"email is not valid"})
 }
  
 const data=await userModel.create({
     name:name,
-    email:email
+    email:email,
+    image:response.url
 })
 await data.save()
 res.json({msg:"record saved"})
